@@ -51,7 +51,19 @@ def softmax_loop(z: list) -> list:
     Requirement: the result must be finite for large-magnitude inputs.
         `softmax_loop([1000.0, 1001.0])` must not raise `OverflowError`.
     """
-    raise NotImplementedError
+    max_z = max(z)
+    acc = 0.0
+    exp_z = []
+
+    for e in z:
+        exp_e = math.exp(e - max_z)
+        acc += exp_e
+        exp_z.append(exp_e)
+
+    for i in range(len(exp_z)):
+        exp_z[i] = exp_z[i] / acc
+
+    return exp_z
 # ============================ END TODO (Task 2) ==============================
 
 
@@ -71,7 +83,12 @@ def softmax_np(z: np.ndarray) -> np.ndarray:
     Requirement: the result must be finite for large-magnitude inputs.
         `softmax_np(np.array([1000.0, 1001.0]))` must not contain `nan`.
     """
-    raise NotImplementedError
+    max_z = np.max(z)
+    exp_z = np.exp(z - max_z)
+    sum_z = np.sum(exp_z)
+    ret_z = exp_z / sum_z
+    
+    return ret_z
 # ============================ END TODO (Task 3) ==============================
 
 
