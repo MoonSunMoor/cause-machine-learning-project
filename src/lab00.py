@@ -108,7 +108,10 @@ def entropy(p: np.ndarray) -> float:
         0 * log(0) = 0, so the result stays finite (never `nan`, never `inf`).
         A one-hot `p` must give exactly 0.0.
     """
-    log_p = np.where(p > 0, np.log(p), 0.0)
+    not_zero = p > 0
+    log_p = np.zeros_like(p)
+    log_p[not_zero] = np.log(p[not_zero])
+    #log_p = np.where(p > 0, np.log(p), 0.0)
     entropy = -np.sum(p * log_p)
 
     return entropy.item()
@@ -160,7 +163,11 @@ def kl_divergence(p: np.ndarray, q: np.ndarray) -> float:
         must satisfy the identity D_KL(p || q) = H(p, q) - H(p); a test
         checks it against your own `cross_entropy` and `entropy`.
     """
-    safe_log_intersect = np.where(p > 0, np.log(p), 0.0) - np.log(np.maximum(q, 1e-12))
+    not_zero = p > 0
+    log_p = np.zeros_like(p)
+    log_p[not_zero] = np.log(p[not_zero])
+
+    safe_log_intersect = log_p - np.log(np.maximum(q, 1e-12))
     divergence = np.sum(p * safe_log_intersect)
 
     return divergence.item()
@@ -196,7 +203,11 @@ def focal_loss(p: np.ndarray, q: np.ndarray, gamma: float = 2.0,
     Requirement: with `gamma=0` and `alpha=None` this must return exactly the
         same value as `cross_entropy(p, q)` — a test checks that.
     """
-    raise NotImplementedError
+    safe_alpha = np.ones_like(p) if alpha is None else alpha
+    safe_log_q = np.log(np.maximum(q, 1e-12))
+    ret = np.sum(-safe_alpha * p * ((1 - q) ** gamma) * safe_log_q)
+
+    return ret.item()
 # ============================ END TODO (Task 7) ==============================
 
 
