@@ -30,7 +30,7 @@ def sigmoid(z: np.ndarray) -> np.ndarray:
         `sigmoid(np.array([-1000.0, 1000.0]))` must return finite numbers,
         never `nan`.
     """
-    raise NotImplementedError
+    return np.clip(1.0 / (1.0 + np.exp(-z)), 0.0, 1.0)
 # ============================ END TODO (Task 1) ==============================
 
 
