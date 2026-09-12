@@ -108,7 +108,10 @@ def entropy(p: np.ndarray) -> float:
         0 * log(0) = 0, so the result stays finite (never `nan`, never `inf`).
         A one-hot `p` must give exactly 0.0.
     """
-    raise NotImplementedError
+    log_p = np.where(p > 0, np.log(p), 0.0)
+    entropy = -np.sum(p * log_p)
+
+    return entropy.item()
 # ============================ END TODO (Task 4) ==============================
 
 
@@ -133,7 +136,10 @@ def cross_entropy(p: np.ndarray, q: np.ndarray) -> float:
         probability you take the logarithm of; Task 6 must use the same value.
         Do not modify the inputs in place.
     """
-    raise NotImplementedError
+    safe_log_q = np.log(np.maximum(q, 1e-12))
+    entropy = -np.sum(p * safe_log_q)
+    
+    return entropy.item()
 # ============================ END TODO (Task 5) ==============================
 
 
@@ -154,7 +160,10 @@ def kl_divergence(p: np.ndarray, q: np.ndarray) -> float:
         must satisfy the identity D_KL(p || q) = H(p, q) - H(p); a test
         checks it against your own `cross_entropy` and `entropy`.
     """
-    raise NotImplementedError
+    safe_log_intersect = np.where(p > 0, np.log(p), 0.0) - np.log(np.maximum(q, 1e-12))
+    divergence = np.sum(p * safe_log_intersect)
+
+    return divergence.item()
 # ============================ END TODO (Task 6) ==============================
 
 
